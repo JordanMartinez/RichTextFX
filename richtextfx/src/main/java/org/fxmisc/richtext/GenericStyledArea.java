@@ -1362,6 +1362,11 @@ public class GenericStyledArea<PS, SEG, S> extends Region
         return virtualFlow.getCellIfVisible(paragraphIndex).map(this::getParagraphBoundsOnScreen);
     }
 
+    public Optional<Bounds> getLineBoundsOnScreen(int paragraphIndex, int lineIndex) {
+        return virtualFlow.getCellIfVisible(paragraphIndex)
+                .map(c -> c.getNode().getLineRangeBoundsOnScreen(lineIndex));
+    }
+
     private Bounds getParagraphBoundsOnScreen(Cell<Paragraph<PS, SEG, S>, ParagraphBox<PS, SEG, S>> cell) {
         Bounds nodeLocal = cell.getNode().getBoundsInLocal();
         Bounds nodeScreen = cell.getNode().localToScreen(nodeLocal);

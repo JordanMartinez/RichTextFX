@@ -187,6 +187,11 @@ class ParagraphBox<PS, SEG, S> extends Region {
         return text.getSelectionBoundsOnScreen();
     }
 
+    public Bounds getLineRangeBoundsOnScreen(int lineIndex) {
+        layout(); // ensure layout, is a no-op if not dirty
+        return text.getLineRangeBoundsOnScreen(lineIndex);
+    }
+
     public Bounds getRangeBoundsOnScreen(int from, int to) {
         layout(); // ensure layout, is a no-op if not dirty
         return text.getRangeBoundsOnScreen(from, to);

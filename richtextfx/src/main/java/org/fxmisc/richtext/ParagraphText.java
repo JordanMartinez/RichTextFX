@@ -198,19 +198,16 @@ class ParagraphText<PS, SEG, S> extends TextFlowExt {
         return caretShape.localToScreen(localBounds);
     }
 
+    public Bounds getLineRangeBoundsOnScreen(int lineIndex) {
+        layout(); // ensure layout, is a no-op if not dirty
+        PathElement[] lineRangeShape = getLineRangeShape(lineIndex);
+        return createBoundsOnScreen(lineRangeShape);
+    }
+
     public Bounds getRangeBoundsOnScreen(int from, int to) {
         layout(); // ensure layout, is a no-op if not dirty
         PathElement[] rangeShape = getRangeShapeSafely(from, to);
-
-        // switch out shapes to calculate the bounds on screen
-        // Must take a copy of the list contents, not just a reference:
-        List<PathElement> selShape = new ArrayList<>(selectionShape.getElements());
-        selectionShape.getElements().setAll(rangeShape);
-        Bounds localBounds = selectionShape.getBoundsInLocal();
-        Bounds rangeBoundsOnScreen = selectionShape.localToScreen(localBounds);
-        selectionShape.getElements().setAll(selShape);
-
-        return rangeBoundsOnScreen;
+        return createBoundsOnScreen(rangeShape);
     }
 
     public Optional<Bounds> getSelectionBoundsOnScreen() {
@@ -248,6 +245,18 @@ class ParagraphText<PS, SEG, S> extends TextFlowExt {
         int start = selection.get().getStart();
         int end = selection.get().getEnd();
         selectionShape.getElements().setAll(getRangeShapeSafely(start, end));
+    }
+
+    private Bounds createBoundsOnScreen(PathElement[] rangeShape) {
+        // switch out shapes to calculate the bounds on screen
+        // Must take a copy of the list contents, not just a reference:
+        List<PathElement> selShape = new ArrayList<>(selectionShape.getElements());
+        selectionShape.getElements().setAll(rangeShape);
+        Bounds localBounds = selectionShape.getBoundsInLocal();
+        Bounds rangeBoundsOnScreen = selectionShape.localToScreen(localBounds);
+        selectionShape.getElements().setAll(selShape);
+
+        return rangeBoundsOnScreen;
     }
 
     /**

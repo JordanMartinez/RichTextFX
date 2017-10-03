@@ -90,6 +90,16 @@ class TextFlowExt extends TextFlow {
         return textLayout().getCaretShape(charIdx, isLeading, 0.0f, 0.0f);
     }
 
+    PathElement[] getLineRangeShape(int lineIndex) {
+        TextLine[] lines = getLines();
+        TwoLevelNavigator navigator = new TwoLevelNavigator(
+                () -> lines.length,
+                i -> lines[i].getLength());
+        int start = navigator.position(lineIndex, 0).toOffset();
+        int end = start + lines[lineIndex].getLength();
+        return getRangeShape(start, end);
+    }
+
     PathElement[] getRangeShape(IndexRange range) {
         return getRangeShape(range.getStart(), range.getEnd());
     }
